@@ -17,3 +17,5 @@ Authenticated validation: after profile setup with the test user Asha, Home show
 Preview recovery validation: a temporary unavailable state occurred while revisiting /more, so managed development services were restarted. Metro rebuilt successfully; the public /auth route now renders the HAMI authentication screen again with no build error.
 
 Realtime-upgrade validation: TypeScript, lint, unit tests, and skill validation passed. The managed preview temporarily reported unavailable during direct /chat navigation, so the server should be restarted before final preview capture. The code guard and state-version changes are intended to keep private tabs auth-gated and prevent legacy demo state rehydration.
+
+Simplified-auth validation: Auth screen visibly presents Name or username and Password as the primary fields. Google login, Facebook login, and Phone number login render with Coming soon labels. A disposable Test User plus password submission successfully advanced to /profile-setup, where the user-owned display name and generated username were present.

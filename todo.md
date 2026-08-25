@@ -57,7 +57,7 @@
 - [ ] Integrate real email authentication and provider-backed Google/Facebook login where credentials are configured
 - [x] Add clear missing-configuration states for providers that cannot be activated in this environment
 - [x] Create and validate a reusable HAMI implementation skill using the skill-creator workflow
-- [ ] Run end-to-end checks, save a new checkpoint, and deliver the upgraded app and reusable skill
+- [x] Run end-to-end checks, save a new checkpoint, and deliver the upgraded app and reusable skill
 
 # Firebase Provider Decision
 
@@ -76,3 +76,10 @@
 - [x] Add near-realtime cross-device message refresh through React Query invalidation and polling
 - [x] Add clean account state and private-tab guards so legacy seeded content cannot rehydrate
 - [x] Create and validate the reusable HAMI production-sync skill package
+
+# Simplified Authentication UX
+
+- [x] Make username/name plus password the primary HAMI login flow
+- [x] Make username/name plus password the primary account-creation flow
+- [x] Move Google, Facebook, and phone-number sign-in into a clearly labeled Coming Soon surface
+- [x] Validate the simplified auth flow and save an updated checkpoint
