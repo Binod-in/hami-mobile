@@ -8,6 +8,7 @@ import "react-native-reanimated";
 import { Platform } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
+import { HamiProvider } from "@/lib/hami-context";
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
@@ -80,7 +81,8 @@ export default function RootLayout() {
 
   const content = (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <HamiProvider>
+        <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
           {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
@@ -88,10 +90,12 @@ export default function RootLayout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="oauth/callback" />
+            <Stack.Screen name="onboarding" />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>
-      </trpc.Provider>
+        </trpc.Provider>
+      </HamiProvider>
     </GestureHandlerRootView>
   );
 
