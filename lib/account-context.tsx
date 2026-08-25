@@ -9,16 +9,18 @@ export type AccountProfile = {
   username: string;
   authMethod: "email" | "phone" | "google" | "facebook" | "apple";
   passwordSet: boolean;
+  bio?: string;
+  avatarUrl?: string;
 };
 
-type AccountState = { profile: AccountProfile | null; passwordHash: string | null; signedIn: boolean; deletedAt: string | null };
+type AccountState = { profile: AccountProfile | null; passwordHash: string | null; signedIn: boolean; rememberMe: boolean; deletedAt: string | null };
 type AccountContextValue = {
   profile: AccountProfile | null;
   deletedAt: string | null;
   isReady: boolean;
   isSignedIn: boolean;
   createAccount: (profile: AccountProfile, password?: string) => Promise<void>;
-  signIn: (identifier: string, password: string) => Promise<boolean>;
+  signIn: (identifier: string, password: string, rememberMe: boolean) => Promise<boolean>;
   updateProfile: (updates: Partial<AccountProfile>) => void;
   signOut: () => void;
   deleteAccount: () => void;
@@ -26,7 +28,7 @@ type AccountContextValue = {
 };
 
 const STORAGE_KEY = "hami-account-state";
-const EMPTY_STATE: AccountState = { profile: null, passwordHash: null, signedIn: false, deletedAt: null };
+const EMPTY_STATE: AccountState = { profile: null, passwordHash: null, signedIn: false, rememberMe: false, deletedAt: null };
 const AccountContext = createContext<AccountContextValue | null>(null);
 
 async function hashPassword(password: string) {
@@ -39,7 +41,7 @@ export function AccountProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void AsyncStorage.getItem(STORAGE_KEY).then((raw) => {
-      if (raw) { try { setState({ ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<AccountState>) }); } catch { setState(EMPTY_STATE); } }
+      if (raw) { try { const saved = { ...EMPTY_STATE, ...(JSON.parse(raw) as Partial<AccountState>) }; setState({ ...saved, signedIn: Boolean(saved.signedIn && saved.rememberMe) }); } catch { setState(EMPTY_STATE); } }
       setIsReady(true);
     });
   }, []);
@@ -53,20 +55,20 @@ export function AccountProvider({ children }: { children: ReactNode }) {
     isSignedIn: Boolean(state.profile) && state.signedIn && !state.deletedAt,
     createAccount: async (profile, password) => {
       const passwordHash = password ? await hashPassword(password) : state.passwordHash;
-      setState({ profile, passwordHash, signedIn: true, deletedAt: null });
+      setState({ profile, passwordHash, signedIn: true, rememberMe: true, deletedAt: null });
     },
-    signIn: async (identifier, password) => {
+    signIn: async (identifier, password, rememberMe) => {
       if (!state.profile || state.deletedAt || !state.passwordHash) return false;
       const cleanIdentifier = identifier.trim().toLowerCase();
       const matches = [state.profile.username, state.profile.displayName, state.profile.email].filter(Boolean).some((value) => value.toLowerCase() === cleanIdentifier);
       if (!matches || (await hashPassword(password)) !== state.passwordHash) return false;
-      setState((current) => ({ ...current, signedIn: true }));
+      setState((current) => ({ ...current, signedIn: true, rememberMe }));
       return true;
     },
     updateProfile: (updates) => setState((current) => current.profile ? { ...current, profile: { ...current.profile, ...updates } } : current),
-    signOut: () => setState((current) => ({ ...current, signedIn: false })),
-    deleteAccount: () => setState((current) => ({ ...current, signedIn: false, deletedAt: new Date().toISOString() })),
-    restoreAccount: () => setState((current) => ({ ...current, deletedAt: null, signedIn: true })),
+    signOut: () => setState((current) => ({ ...current, signedIn: false, rememberMe: false })),
+    deleteAccount: () => setState((current) => ({ ...current, signedIn: false, rememberMe: false, deletedAt: new Date().toISOString() })),
+    restoreAccount: () => setState((current) => ({ ...current, deletedAt: null, signedIn: true, rememberMe: true })),
   }), [isReady, state]);
 
   return <AccountContext.Provider value={value}>{children}</AccountContext.Provider>;

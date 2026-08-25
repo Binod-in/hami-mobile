@@ -95,6 +95,8 @@ export default function RootLayout() {
             <Stack.Screen name="onboarding" />
             <Stack.Screen name="auth" />
             <Stack.Screen name="profile-setup" />
+            <Stack.Screen name="profile-settings" />
+            <Stack.Screen name="forgot-password" />
           </Stack>
           <StatusBar style="auto" />
         </QueryClientProvider>

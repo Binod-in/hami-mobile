@@ -83,3 +83,11 @@
 - [x] Make username/name plus password the primary account-creation flow
 - [x] Move Google, Facebook, and phone-number sign-in into a clearly labeled Coming Soon surface
 - [x] Validate the simplified auth flow and save an updated checkpoint
+
+# Account Experience Upgrade
+
+- [x] Add profile settings page with avatar picker, bio editor, and display-name update
+- [x] Add Remember Me behavior for the name/password login session
+- [x] Add dedicated Forgot Password screen with email reset-link request state
+- [x] Update and validate the reusable HAMI skill with these account-flow patterns
+- [x] Validate account flows and save a new HAMI checkpoint
