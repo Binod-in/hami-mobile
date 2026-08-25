@@ -102,3 +102,15 @@
 - [x] Add deterministic duration formatting for years, months, and days
 - [x] Validate solo login state, partner setup, connected Home state, and duration display
 - [x] Save a new checkpoint for the connection-gated relationship upgrade
+
+# Partner Linking and Shared Gallery Upgrade
+
+- [x] Add invite-link generation with shareable code/deep-link state
+- [ ] Add server-backed invite acceptance that creates or signs into a partner account before linking
+- [x] Add pending, accepted, declined, and removed connection states
+- [x] Add shared photo gallery route visible only after connection
+- [x] Add gallery image picker, upload metadata, captions, and connected-user viewing
+- [x] Add connection settings to edit partner details
+- [x] Add connection removal with confirmation and solo-state restoration
+- [x] Validate invite deep-link, gallery, edit, and removal code paths with TypeScript, lint, unit tests, and static review; interactive preview remains pending server stability
+- [ ] Save a new checkpoint for the partner-linking and shared-gallery upgrade

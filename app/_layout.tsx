@@ -97,6 +97,10 @@ export default function RootLayout() {
             <Stack.Screen name="profile-setup" />
             <Stack.Screen name="profile-settings" />
             <Stack.Screen name="partner-setup" />
+            <Stack.Screen name="invite" />
+            <Stack.Screen name="connect" />
+            <Stack.Screen name="gallery" />
+            <Stack.Screen name="connection-settings" />
             <Stack.Screen name="forgot-password" />
           </Stack>
           <StatusBar style="auto" />

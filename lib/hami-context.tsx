@@ -57,6 +57,9 @@ export type PartnerProfile = {
   relationshipStartDate: string;
 };
 
+export type GalleryPhoto = { id: string; uri: string; caption: string; uploadedBy: "you" | "partner"; createdAt: string };
+export type ConnectionStatus = "solo" | "pending" | "connected";
+
 export const moodOptions: Mood[] = [
   { label: "Happy", emoji: "☺", tone: "#F6B861" },
   { label: "Loved", emoji: "♥", tone: "#E87891" },
@@ -91,6 +94,9 @@ type HamiContextValue = {
   lastGift: Gift | null;
   connectionRequested: boolean;
   partner: PartnerProfile | null;
+  connectionStatus: ConnectionStatus;
+  inviteCode: string | null;
+  gallery: GalleryPhoto[];
   addUpdate: (title: string, detail: string, mood: Mood) => void;
   addMessage: (text: string) => void;
   addMemory: (memory: Omit<Memory, "id">) => void;
@@ -98,6 +104,10 @@ type HamiContextValue = {
   sendGift: (gift: Gift) => void;
   requestConnection: () => void;
   savePartner: (partner: Omit<PartnerProfile, "id">) => void;
+  createInvite: () => string;
+  acceptInvite: (code: string) => boolean;
+  removeConnection: () => void;
+  addGalleryPhoto: (photo: Omit<GalleryPhoto, "id" | "createdAt">) => void;
 };
 
 const HamiContext = createContext<HamiContextValue | null>(null);
@@ -110,12 +120,15 @@ export function HamiProvider({ children }: { children: ReactNode }) {
   const [lastGift, setLastGift] = useState<Gift | null>(null);
   const [connectionRequested, setConnectionRequested] = useState(false);
   const [partner, setPartner] = useState<PartnerProfile | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("solo");
+  const [inviteCode, setInviteCode] = useState<string | null>(null);
+  const [gallery, setGallery] = useState<GalleryPhoto[]>([]);
 
   useEffect(() => {
     void AsyncStorage.getItem("hami-local-state-v2").then((raw) => {
       if (!raw) return;
       try {
-        const saved = JSON.parse(raw) as Partial<Pick<HamiContextValue, "updates" | "messages" | "memories" | "letters" | "lastGift" | "connectionRequested" | "partner">>;
+        const saved = JSON.parse(raw) as Partial<Pick<HamiContextValue, "updates" | "messages" | "memories" | "letters" | "lastGift" | "connectionRequested" | "partner" | "connectionStatus" | "inviteCode" | "gallery">>;
         if (saved.updates) setUpdates(saved.updates);
         if (saved.messages) setMessages(saved.messages);
         if (saved.memories) setMemories(saved.memories);
@@ -123,6 +136,9 @@ export function HamiProvider({ children }: { children: ReactNode }) {
         if (saved.lastGift) setLastGift(saved.lastGift);
         if (typeof saved.connectionRequested === "boolean") setConnectionRequested(saved.connectionRequested);
         if (saved.partner) setPartner(saved.partner);
+        if (saved.connectionStatus) setConnectionStatus(saved.connectionStatus);
+        if (saved.inviteCode) setInviteCode(saved.inviteCode);
+        if (saved.gallery) setGallery(saved.gallery);
       } catch {
         // Ignore stale local demo state and continue with the safe seed.
       }
@@ -132,9 +148,9 @@ export function HamiProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     void AsyncStorage.setItem(
       "hami-local-state-v2",
-      JSON.stringify({ updates, messages, memories, letters, lastGift, connectionRequested, partner }),
+      JSON.stringify({ updates, messages, memories, letters, lastGift, connectionRequested, partner, connectionStatus, inviteCode, gallery }),
     );
-  }, [updates, messages, memories, letters, lastGift, connectionRequested, partner]);
+  }, [updates, messages, memories, letters, lastGift, connectionRequested, partner, connectionStatus, inviteCode, gallery]);
 
   const value = useMemo<HamiContextValue>(() => ({
     updates,
@@ -144,6 +160,9 @@ export function HamiProvider({ children }: { children: ReactNode }) {
     lastGift,
     connectionRequested,
     partner,
+    connectionStatus,
+    inviteCode,
+    gallery,
     addUpdate: (title, detail, mood) => {
       setUpdates((current) => [{ id: `update-${Date.now()}`, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), title, detail, mood }, ...current]);
     },
@@ -156,7 +175,11 @@ export function HamiProvider({ children }: { children: ReactNode }) {
     sendLetter: (title, body, deliveryLabel, locked) => setLetters((current) => [{ id: `letter-${Date.now()}`, title, body, deliveryLabel, locked }, ...current]),
     sendGift: (gift) => setLastGift(gift),
     requestConnection: () => setConnectionRequested(true),
-    savePartner: (partnerData) => setPartner({ ...partnerData, id: `partner-${Date.now()}` }),
+    savePartner: (partnerData) => { setPartner({ ...partnerData, id: `partner-${Date.now()}` }); setConnectionStatus("connected"); },
+    createInvite: () => { const code = `HAMI-${Math.random().toString(36).slice(2, 8).toUpperCase()}`; setInviteCode(code); setConnectionStatus("pending"); return code; },
+    acceptInvite: (code) => { const accepted = Boolean(inviteCode && code.trim().toUpperCase() === inviteCode); if (accepted) setConnectionStatus("connected"); return accepted; },
+    removeConnection: () => { setPartner(null); setConnectionStatus("solo"); setInviteCode(null); setGallery([]); },
+    addGalleryPhoto: (photo) => setGallery((current) => [{ ...photo, id: `photo-${Date.now()}`, createdAt: new Date().toISOString() }, ...current]),
   }), [updates, messages, memories, letters, lastGift, connectionRequested, partner]);
 
   return <HamiContext.Provider value={value}>{children}</HamiContext.Provider>;
