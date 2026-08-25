@@ -91,3 +91,14 @@
 - [x] Add dedicated Forgot Password screen with email reset-link request state
 - [x] Update and validate the reusable HAMI skill with these account-flow patterns
 - [x] Validate account flows and save a new HAMI checkpoint
+
+# Connection-Gated Relationship Upgrade
+
+- [x] Keep every newly logged-in user in an independent private profile until a partner is explicitly added
+- [x] Add partner profile fields for name, avatar, bio/details, and relationship start date
+- [x] Add explicit partner invite/setup flow from the solo Home or More surface
+- [x] Show neutral solo Home state with no couple names, connected badge, or love-story duration before setup
+- [x] Show connected avatars, partner details, and years/months/days together only after relationship setup
+- [x] Add deterministic duration formatting for years, months, and days
+- [x] Validate solo login state, partner setup, connected Home state, and duration display
+- [x] Save a new checkpoint for the connection-gated relationship upgrade

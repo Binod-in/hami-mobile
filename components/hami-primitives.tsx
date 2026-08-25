@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from "react-native";
 import type { ReactNode } from "react";
 import { IconSymbol, type IconSymbolName } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
@@ -13,11 +13,11 @@ export function Surface({ children, style }: SurfaceProps) {
   return <View style={[styles.surface, { backgroundColor: colors.surface, borderColor: colors.border }, style]}>{children}</View>;
 }
 
-export function Avatar({ initials, size = 48, online = false }: { initials: string; size?: number; online?: boolean }) {
+export function Avatar({ initials, size = 48, online = false, avatarUrl }: { initials: string; size?: number; online?: boolean; avatarUrl?: string }) {
   const colors = useColors();
   return (
     <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2, backgroundColor: "#EED8DC" }]}>
-      <Text style={[styles.avatarText, { color: colors.primary, fontSize: size * 0.34 }]}>{initials}</Text>
+      {avatarUrl ? <Image source={{ uri: avatarUrl }} style={{ width: size, height: size, borderRadius: size / 2 }} /> : <Text style={[styles.avatarText, { color: colors.primary, fontSize: size * 0.34 }]}>{initials}</Text>}
       {online ? <View style={[styles.onlineDot, { backgroundColor: colors.success, borderColor: colors.surface }]} /> : null}
     </View>
   );

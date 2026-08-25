@@ -8,8 +8,6 @@ import { getDaysUntilNextDate, getTogetherDuration, moodOptions, useHami, type M
 import { useColors } from "@/hooks/use-colors";
 import { useAccount } from "@/lib/account-context";
 
-const relationshipStart = "2021-08-08";
-
 function QuickAction({ icon, label, detail, onPress, tint }: { icon: string; label: string; detail: string; onPress: () => void; tint: string }) {
   const colors = useColors();
   return (
@@ -25,11 +23,11 @@ export default function HomeScreen() {
   const colors = useColors();
   const router = useRouter();
   const { profile } = useAccount();
-  const { updates, memories, lastGift, addUpdate } = useHami();
+  const { updates, memories, lastGift, addUpdate, partner } = useHami();
   const displayName = profile?.displayName || "your person";
   const initials = profile?.displayName ? profile.displayName.slice(0, 2).toUpperCase() : "YOU";
-  const duration = useMemo(() => getTogetherDuration(relationshipStart), []);
-  const anniversaryDays = getDaysUntilNextDate(8, 8);
+  const duration = useMemo(() => partner ? getTogetherDuration(partner.relationshipStartDate) : null, [partner]);
+  const anniversaryDays = partner ? getDaysUntilNextDate(Number(partner.relationshipStartDate.slice(5, 7)), Number(partner.relationshipStartDate.slice(8, 10))) : null;
   const [composerOpen, setComposerOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
@@ -60,20 +58,18 @@ export default function HomeScreen() {
         <View style={[styles.hero, { backgroundColor: "#2C1B21" }]}>
           <View style={styles.heroTop}>
             <View style={styles.partnerCluster}>
-              <Avatar initials={initials} size={50} />
-              <View style={[styles.avatarOverlap, { borderColor: "#2C1B21" }]}><Avatar initials="SP" size={50} online /></View>
+              <Avatar initials={initials} size={50} avatarUrl={profile?.avatarUrl} />
+              {partner ? <View style={[styles.avatarOverlap, { borderColor: "#2C1B21" }]}><Avatar initials={partner.name.slice(0, 2).toUpperCase()} size={50} avatarUrl={partner.avatarUrl} online /></View> : null}
             </View>
-            <Pill label="PRIVATE" color="#4A9276" />
+            <Pill label={partner ? "CONNECTED" : "YOUR SPACE"} color={partner ? "#4A9276" : "#775060"} />
           </View>
-          <Text style={styles.heroKicker}>YOUR SHARED HOME</Text>
-          <Text style={styles.heroTitle}>Still choosing
-            {"\n"}each other.</Text>
-          <Text style={styles.heroBody}>{profile?.displayName ? "Invite someone you love and start building your shared story." : "Create your profile to begin your private home."}</Text>
+          <Text style={styles.heroKicker}>{partner ? `${profile?.displayName ?? "YOU"} & ${partner.name.toUpperCase()}` : "A PRIVATE HOME FOR YOU"}</Text>
+          <Text style={styles.heroTitle}>{partner ? <>Still choosing{"\n"}each other.</> : <>Your space,{
+            "\n"}your story.</>}</Text>
+          <Text style={styles.heroBody}>{partner ? `${partner.bio || "A shared story worth keeping."} Together for ${duration?.years ?? 0} years, ${duration?.months ?? 0} months, and ${duration?.days ?? 0} days.` : "Add your partner’s name, photo, details, and start date when you’re ready."}</Text>
           <View style={styles.heroFooter}>
-            <View><Text style={styles.heroStat}>{duration.totalDays.toLocaleString()}</Text><Text style={styles.heroStatLabel}>days together</Text></View>
-            <View style={styles.heroDivider} />
-            <View><Text style={styles.heroStat}>{anniversaryDays}</Text><Text style={styles.heroStatLabel}>days to anniversary</Text></View>
-            <Pressable onPress={() => router.push("/more")} style={({ pressed }) => [styles.heroArrow, pressed && styles.pressed]}><Text style={styles.heroArrowText}>↗</Text></Pressable>
+            {partner && duration && anniversaryDays !== null ? <><View><Text style={styles.heroStat}>{duration.totalDays.toLocaleString()}</Text><Text style={styles.heroStatLabel}>days together</Text></View><View style={styles.heroDivider} /><View><Text style={styles.heroStat}>{anniversaryDays}</Text><Text style={styles.heroStatLabel}>days to anniversary</Text></View></> : <View><Text style={styles.heroStat}>—</Text><Text style={styles.heroStatLabel}>not connected yet</Text></View>}
+            <Pressable onPress={() => router.push(partner ? "/more" : "/partner-setup")} style={({ pressed }) => [styles.heroArrow, pressed && styles.pressed]}><Text style={styles.heroArrowText}>{partner ? "↗" : "+"}</Text></Pressable>
           </View>
         </View>
 

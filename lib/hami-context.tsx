@@ -48,6 +48,15 @@ export type Gift = {
   tone: string;
 };
 
+export type PartnerProfile = {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  bio: string;
+  relationshipType: "Partner" | "Family" | "Friends" | "Private group";
+  relationshipStartDate: string;
+};
+
 export const moodOptions: Mood[] = [
   { label: "Happy", emoji: "☺", tone: "#F6B861" },
   { label: "Loved", emoji: "♥", tone: "#E87891" },
@@ -81,12 +90,14 @@ type HamiContextValue = {
   letters: Letter[];
   lastGift: Gift | null;
   connectionRequested: boolean;
+  partner: PartnerProfile | null;
   addUpdate: (title: string, detail: string, mood: Mood) => void;
   addMessage: (text: string) => void;
   addMemory: (memory: Omit<Memory, "id">) => void;
   sendLetter: (title: string, body: string, deliveryLabel: string, locked: boolean) => void;
   sendGift: (gift: Gift) => void;
   requestConnection: () => void;
+  savePartner: (partner: Omit<PartnerProfile, "id">) => void;
 };
 
 const HamiContext = createContext<HamiContextValue | null>(null);
@@ -98,18 +109,20 @@ export function HamiProvider({ children }: { children: ReactNode }) {
   const [letters, setLetters] = useState(initialLetters);
   const [lastGift, setLastGift] = useState<Gift | null>(null);
   const [connectionRequested, setConnectionRequested] = useState(false);
+  const [partner, setPartner] = useState<PartnerProfile | null>(null);
 
   useEffect(() => {
     void AsyncStorage.getItem("hami-local-state-v2").then((raw) => {
       if (!raw) return;
       try {
-        const saved = JSON.parse(raw) as Partial<Pick<HamiContextValue, "updates" | "messages" | "memories" | "letters" | "lastGift" | "connectionRequested">>;
+        const saved = JSON.parse(raw) as Partial<Pick<HamiContextValue, "updates" | "messages" | "memories" | "letters" | "lastGift" | "connectionRequested" | "partner">>;
         if (saved.updates) setUpdates(saved.updates);
         if (saved.messages) setMessages(saved.messages);
         if (saved.memories) setMemories(saved.memories);
         if (saved.letters) setLetters(saved.letters);
         if (saved.lastGift) setLastGift(saved.lastGift);
         if (typeof saved.connectionRequested === "boolean") setConnectionRequested(saved.connectionRequested);
+        if (saved.partner) setPartner(saved.partner);
       } catch {
         // Ignore stale local demo state and continue with the safe seed.
       }
@@ -119,9 +132,9 @@ export function HamiProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     void AsyncStorage.setItem(
       "hami-local-state-v2",
-      JSON.stringify({ updates, messages, memories, letters, lastGift, connectionRequested }),
+      JSON.stringify({ updates, messages, memories, letters, lastGift, connectionRequested, partner }),
     );
-  }, [updates, messages, memories, letters, lastGift, connectionRequested]);
+  }, [updates, messages, memories, letters, lastGift, connectionRequested, partner]);
 
   const value = useMemo<HamiContextValue>(() => ({
     updates,
@@ -130,6 +143,7 @@ export function HamiProvider({ children }: { children: ReactNode }) {
     letters,
     lastGift,
     connectionRequested,
+    partner,
     addUpdate: (title, detail, mood) => {
       setUpdates((current) => [{ id: `update-${Date.now()}`, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), title, detail, mood }, ...current]);
     },
@@ -142,7 +156,8 @@ export function HamiProvider({ children }: { children: ReactNode }) {
     sendLetter: (title, body, deliveryLabel, locked) => setLetters((current) => [{ id: `letter-${Date.now()}`, title, body, deliveryLabel, locked }, ...current]),
     sendGift: (gift) => setLastGift(gift),
     requestConnection: () => setConnectionRequested(true),
-  }), [updates, messages, memories, letters, lastGift, connectionRequested]);
+    savePartner: (partnerData) => setPartner({ ...partnerData, id: `partner-${Date.now()}` }),
+  }), [updates, messages, memories, letters, lastGift, connectionRequested, partner]);
 
   return <HamiContext.Provider value={value}>{children}</HamiContext.Provider>;
 }
