@@ -64,7 +64,7 @@ const initialUpdates: DailyUpdate[] = [
 ];
 
 const initialMessages: Message[] = [
-  { id: "m1", text: "Good morning, Binod. I hope today feels gentle.", fromMe: false, time: "08:42", read: true },
+  { id: "m1", text: "Good morning. I hope today feels gentle.", fromMe: false, time: "08:42", read: true },
   { id: "m2", text: "Good morning ♥ I’m taking you with me everywhere.", fromMe: true, time: "08:47", read: true },
   { id: "m3", text: "That’s my favorite kind of promise.", fromMe: false, time: "08:49", read: true },
 ];

@@ -197,3 +197,11 @@ The highest risks are privacy leaks from under-scoped queries, media bandwidth a
 ## Recommended Build Order
 
 The recommended sequence is foundation and identity, private connection and relationship context, Today and Chat, Memories and media, important dates and letters, groups and shared planning, then notifications, moderation, AI consent, and premium architecture. This sequence preserves the product's emotional center while keeping the backend maintainable and portable.
+
+## Authentication-First Upgrade
+
+HAMI now treats the root route as an authentication gate. A new user sees login or registration before any private relationship content. The entry screen supports email/password and phone-number form modes, plus Google, Facebook, and Apple provider buttons routed through the scaffold’s secure OAuth entry point. Registration creates a local account profile for prototype validation and routes into profile setup, while OAuth-authenticated users are routed into the same profile setup when a local HAMI profile is not yet present.
+
+The local prototype persists the account profile in AsyncStorage, never persists the raw password, and supports display name, username, email or phone identifier, auth method, sign-out, profile editing, deletion scheduling, and restoration. Relationship and message data remains locally scoped to the account-aware app shell until server synchronization is enabled.
+
+For production, the provider buttons must connect to the selected identity provider configuration and the email/phone forms must call a real authentication API that validates credentials, sends verification or recovery codes, issues sessions, and enforces rate limits. PostgreSQL authorization, secure server-side deletion windows, audit logging, and account export/deletion workflows remain explicit extension points rather than being represented as complete production authentication in this MVP.

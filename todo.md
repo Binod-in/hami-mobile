@@ -16,7 +16,7 @@
 - [x] Add English translation dictionary structure with Nepali and Japanese extension points
 - [x] Add deterministic tests for core local state transitions and date calculations
 - [x] Validate TypeScript, lint, tests, and mobile preview rendering
-- [ ] Create final checkpoint and deliver the project version to the user
+- [x] Create final checkpoint and deliver the project version to the user
 
 ## Future / Explicit Extension Points
 
@@ -31,3 +31,17 @@
 - [ ] Data export, account deletion, audit logging, and backup/restore runbooks
 - [ ] AI-assisted message and memory features behind explicit user consent
 - [ ] Premium architecture without forcing monetization into the initial experience
+
+- [x] Fix iOS Code Scanner connectivity failure: Expo development server returns HTTP 502 / upstream_connect_failed on port 8081
+
+# Authentication-First Upgrade
+
+- [x] Replace the seeded Binod–Indreni first-open experience with authentication-first entry
+- [x] Add login options for email/password, Google, Facebook, phone number, and extensible provider slots
+- [x] Add registration, password creation, password reset, verification, and session-state screens
+- [x] Add user-owned profile setup so display name and relationship data are entered by each user
+- [x] Add account settings for password change, logout, profile editing, and privacy controls
+- [x] Add account deletion with confirmation and a reversible restore window in the local product flow
+- [x] Add an extensible feature roadmap surface for future groups, realtime chat, media, notifications, AI, and premium modules
+- [x] Validate authentication-first navigation and ensure no personal demo names appear before user setup
+- [ ] Create checkpoint for authentication-first upgrade and deliver the updated project version

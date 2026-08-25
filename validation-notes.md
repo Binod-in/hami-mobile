@@ -5,3 +5,13 @@ The mobile preview renders the HAMI Home, Today, Chat, and Memories tabs at a 39
 The More route renders in the browser even though one automated screenshot capture returned a transient capture failure. Its Connect row opens a modal sheet with the KURA code, code entry field, and a Send connection request button. No runtime or TypeScript error was visible during this interaction.
 
 The onboarding route initially returned an unavailable page because it was not registered in the root Stack. After adding `<Stack.Screen name="onboarding" />`, the route renders correctly with the HAMI mark, four-step progression, warm keepsake illustration, Skip action, Continue action, and login affordance.
+
+Authentication-first validation: the root route briefly shows a loading state during session resolution and then redirects to /auth when no active account is present. The /auth screen renders HAMI branding, Log in/Create account modes, Google/Facebook/Apple provider buttons, email/phone selector, password input, password recovery entry, and secure login action. The previous Binod–Indreni labels are absent from app screens.
+
+Registration validation: switching to Create account updates the copy and password placeholder correctly; email and password inputs accept values. The form is ready to advance into profile setup after submission.
+
+Profile setup validation: submitting registration opens /profile-setup. The screen starts with a neutral YOU avatar, collects display name and username, offers Partner/Family/Friends/Private group choices, and provides a Create my private home action. Entered test values update the avatar initials immediately.
+
+Authenticated validation: after profile setup with the test user Asha, Home shows “Good morning, Asha” and AS initials, while More shows Asha and PRIVATE. No Binod–Indreni demo identity remains in the rendered app surfaces. More exposes Connect, dates, letters, gifts, future modules, Profile & privacy, and Replay welcome.
+
+Preview recovery validation: a temporary unavailable state occurred while revisiting /more, so managed development services were restarted. Metro rebuilt successfully; the public /auth route now renders the HAMI authentication screen again with no build error.

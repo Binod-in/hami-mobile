@@ -5,12 +5,13 @@ import { ScreenContainer } from "@/components/screen-container";
 import { Avatar, IconButton, ScreenTitle } from "@/components/hami-primitives";
 import { useHami, type Message } from "@/lib/hami-context";
 import { useColors } from "@/hooks/use-colors";
+import { useAccount } from "@/lib/account-context";
 
 function Bubble({ message }: { message: Message }) {
   const colors = useColors();
   return (
     <View style={[styles.bubbleRow, message.fromMe && styles.bubbleRowMe]}>
-      {!message.fromMe ? <Avatar initials="IN" size={30} online /> : null}
+      {!message.fromMe ? <Avatar initials="SP" size={30} online /> : null}
       <View style={[styles.bubble, message.fromMe ? { backgroundColor: colors.primary } : { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 }]}>
         <Text style={[styles.bubbleText, { color: message.fromMe ? "#FFF9F7" : colors.foreground }]}>{message.text}</Text>
         <View style={styles.bubbleMeta}><Text style={[styles.bubbleTime, { color: message.fromMe ? "#EBC5CD" : colors.muted }]}>{message.time}</Text>{message.fromMe ? <Text style={[styles.read, { color: message.read ? "#F6B5C3" : "#EBC5CD" }]}>✓✓</Text> : null}</View>
@@ -21,7 +22,9 @@ function Bubble({ message }: { message: Message }) {
 
 export default function ChatScreen() {
   const colors = useColors();
+  const { profile } = useAccount();
   const { messages, addMessage } = useHami();
+  const partnerName = profile?.displayName ? "Your person" : "Connect someone";
   const [draft, setDraft] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -37,7 +40,7 @@ export default function ChatScreen() {
     <ScreenContainer className="px-5 pt-4" edges={["top", "left", "right"]}>
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined} keyboardVerticalOffset={8}>
         <View style={styles.headerRow}><ScreenTitle eyebrow="PRIVATE CONVERSATION" title="Chat" subtitle="Just the two of you" /><View style={styles.headerActions}><IconButton name="magnifyingglass" accessibilityLabel="Search messages" onPress={() => setSearchOpen((value) => !value)} /><IconButton name="ellipsis" accessibilityLabel="Chat options" onPress={() => {}} /></View></View>
-        <View style={[styles.personBar, { borderColor: colors.border, backgroundColor: colors.surface }]}><Avatar initials="IN" size={42} online /><View style={styles.personCopy}><Text style={[styles.personName, { color: colors.foreground }]}>Indreni</Text><Text style={[styles.personStatus, { color: colors.success }]}>Online now</Text></View><View style={[styles.privatePill, { backgroundColor: "#F5E8E7" }]}><Text style={[styles.privateText, { color: colors.primary }]}>Private</Text></View></View>
+        <View style={[styles.personBar, { borderColor: colors.border, backgroundColor: colors.surface }]}><Avatar initials="SP" size={42} online /><View style={styles.personCopy}><Text style={[styles.personName, { color: colors.foreground }]}>{partnerName}</Text><Text style={[styles.personStatus, { color: colors.success }]}>Online now</Text></View><View style={[styles.privatePill, { backgroundColor: "#F5E8E7" }]}><Text style={[styles.privateText, { color: colors.primary }]}>Private</Text></View></View>
         {searchOpen ? <View style={[styles.searchBar, { backgroundColor: colors.surface, borderColor: colors.border }]}><IconButton name="magnifyingglass" accessibilityLabel="Search" /><TextInput value={query} onChangeText={setQuery} placeholder="Search this conversation" placeholderTextColor={colors.muted} style={[styles.searchInput, { color: colors.foreground }]} autoFocus /></View> : null}
         <FlatList data={filteredMessages} keyExtractor={(item) => item.id} renderItem={({ item }) => <Bubble message={item} />} contentContainerStyle={styles.messageList} showsVerticalScrollIndicator={false} ListHeaderComponent={<View style={styles.dateDivider}><View style={[styles.divider, { backgroundColor: colors.border }]} /><Text style={[styles.dateLabel, { color: colors.muted }]}>TODAY</Text><View style={[styles.divider, { backgroundColor: colors.border }]} /></View>} ListEmptyComponent={<View style={styles.empty}><Text style={styles.emptyGlyph}>⌕</Text><Text style={[styles.emptyTitle, { color: colors.foreground }]}>No messages found</Text><Text style={[styles.emptyBody, { color: colors.muted }]}>Try a different word or start a new conversation.</Text></View>} />
         <View style={styles.composerRow}><IconButton name="plus" accessibilityLabel="Add attachment" onPress={() => {}} /><TextInput value={draft} onChangeText={setDraft} placeholder="Write something..." placeholderTextColor={colors.muted} style={[styles.composerInput, { backgroundColor: colors.surface, borderColor: colors.border, color: colors.foreground }]} onSubmitEditing={send} returnKeyType="send" /><Pressable onPress={send} accessibilityRole="button" accessibilityLabel="Send message" style={({ pressed }) => [styles.sendButton, { backgroundColor: draft.trim() ? colors.primary : colors.border }, pressed && styles.pressed]}><Text style={styles.sendGlyph}>↑</Text></Pressable></View>

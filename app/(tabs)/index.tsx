@@ -6,6 +6,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { Avatar, IconButton, Pill, PrimaryButton, SectionHeading, Surface } from "@/components/hami-primitives";
 import { getDaysUntilNextDate, getTogetherDuration, moodOptions, useHami, type Mood } from "@/lib/hami-context";
 import { useColors } from "@/hooks/use-colors";
+import { useAccount } from "@/lib/account-context";
 
 const relationshipStart = "2021-08-08";
 
@@ -23,7 +24,10 @@ function QuickAction({ icon, label, detail, onPress, tint }: { icon: string; lab
 export default function HomeScreen() {
   const colors = useColors();
   const router = useRouter();
+  const { profile } = useAccount();
   const { updates, memories, lastGift, addUpdate } = useHami();
+  const displayName = profile?.displayName || "your person";
+  const initials = profile?.displayName ? profile.displayName.slice(0, 2).toUpperCase() : "YOU";
   const duration = useMemo(() => getTogetherDuration(relationshipStart), []);
   const anniversaryDays = getDaysUntilNextDate(8, 8);
   const [composerOpen, setComposerOpen] = useState(false);
@@ -45,26 +49,26 @@ export default function HomeScreen() {
         <View style={styles.topBar}>
           <View>
             <Text style={[styles.eyebrow, { color: colors.primary }]}>YOUR PRIVATE HOME</Text>
-            <Text style={[styles.greeting, { color: colors.foreground }]}>Good morning, Binod</Text>
+            <Text style={[styles.greeting, { color: colors.foreground }]}>Good morning, {displayName}</Text>
           </View>
           <View style={styles.topActions}>
             <IconButton name="bell.fill" accessibilityLabel="Notifications" onPress={() => {}} />
-            <Avatar initials="BI" size={40} online />
+            <Avatar initials={initials} size={40} online />
           </View>
         </View>
 
         <View style={[styles.hero, { backgroundColor: "#2C1B21" }]}>
           <View style={styles.heroTop}>
             <View style={styles.partnerCluster}>
-              <Avatar initials="BI" size={50} />
-              <View style={[styles.avatarOverlap, { borderColor: "#2C1B21" }]}><Avatar initials="IN" size={50} online /></View>
+              <Avatar initials={initials} size={50} />
+              <View style={[styles.avatarOverlap, { borderColor: "#2C1B21" }]}><Avatar initials="SP" size={50} online /></View>
             </View>
-            <Pill label="CONNECTED" color="#4A9276" />
+            <Pill label="PRIVATE" color="#4A9276" />
           </View>
-          <Text style={styles.heroKicker}>BINOD & INDRENI</Text>
+          <Text style={styles.heroKicker}>YOUR SHARED HOME</Text>
           <Text style={styles.heroTitle}>Still choosing
             {"\n"}each other.</Text>
-          <Text style={styles.heroBody}>Together for {duration.years} years, {duration.months} months, and {duration.days} days.</Text>
+          <Text style={styles.heroBody}>{profile?.displayName ? "Invite someone you love and start building your shared story." : "Create your profile to begin your private home."}</Text>
           <View style={styles.heroFooter}>
             <View><Text style={styles.heroStat}>{duration.totalDays.toLocaleString()}</Text><Text style={styles.heroStatLabel}>days together</Text></View>
             <View style={styles.heroDivider} />

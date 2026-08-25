@@ -18,7 +18,7 @@ function TimelineItem({ item, isLast }: { item: DailyUpdate; isLast: boolean }) 
         <View style={styles.timelineTop}><Text style={[styles.time, { color: colors.primary }]}>{item.time}</Text><View style={[styles.moodTag, { backgroundColor: `${item.mood.tone}24` }]}><Text style={[styles.moodTagText, { color: item.mood.tone }]}>{item.mood.emoji} {item.mood.label}</Text></View></View>
         <Text style={[styles.itemTitle, { color: colors.foreground }]}>{item.title}</Text>
         <Text style={[styles.itemDetail, { color: colors.muted }]}>{item.detail}</Text>
-        <Text style={[styles.visibility, { color: colors.muted }]}>Private to Binod & Indreni</Text>
+        <Text style={[styles.visibility, { color: colors.muted }]}>Private to your shared home</Text>
       </Surface>
     </View>
   );
@@ -51,7 +51,7 @@ export default function TodayScreen() {
         ListHeaderComponent={<>
           <ScreenTitle eyebrow="PRIVATE DAILY TIMELINE" title="Today" subtitle={today} right={<IconButton name="ellipsis" accessibilityLabel="Today options" onPress={() => {}} />} />
           <View style={[styles.statusCard, { backgroundColor: "#F2E6E6" }]}>
-            <View style={styles.statusLeft}><Avatar initials="IN" size={44} online /><View style={styles.statusCopy}><Text style={[styles.statusName, { color: colors.foreground }]}>Indreni is feeling loved</Text><Text style={[styles.statusNote, { color: colors.muted }]}>Her last update was 18 minutes ago</Text></View></View><Text style={styles.statusEmoji}>♥</Text>
+            <View style={styles.statusLeft}><Avatar initials="SP" size={44} online /><View style={styles.statusCopy}><Text style={[styles.statusName, { color: colors.foreground }]}>Your person is feeling loved</Text><Text style={[styles.statusNote, { color: colors.muted }]}>Their last update was 18 minutes ago</Text></View></View><Text style={styles.statusEmoji}>♥</Text>
           </View>
           <View style={styles.sectionTop}><SectionHeading title="Your moments" action="How it works" onAction={() => {}} /><Pressable onPress={() => setComposerOpen(true)} style={({ pressed }) => [styles.addButton, { borderColor: colors.primary }, pressed && styles.pressed]}><Text style={[styles.addButtonText, { color: colors.primary }]}>＋ Add moment</Text></Pressable></View>
         </>}
