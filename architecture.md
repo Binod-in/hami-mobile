@@ -205,3 +205,11 @@ HAMI now treats the root route as an authentication gate. A new user sees login 
 The local prototype persists the account profile in AsyncStorage, never persists the raw password, and supports display name, username, email or phone identifier, auth method, sign-out, profile editing, deletion scheduling, and restoration. Relationship and message data remains locally scoped to the account-aware app shell until server synchronization is enabled.
 
 For production, the provider buttons must connect to the selected identity provider configuration and the email/phone forms must call a real authentication API that validates credentials, sends verification or recovery codes, issues sessions, and enforces rate limits. PostgreSQL authorization, secure server-side deletion windows, audit logging, and account export/deletion workflows remain explicit extension points rather than being represented as complete production authentication in this MVP.
+
+## Realtime and Provider Decision Update
+
+The approved implementation uses the existing managed Drizzle database and Manus session boundary because the project currently exposes a MySQL connection string and Firebase credentials were not available. The new schema stores profiles, private conversations, conversation membership, messages, and message attachment metadata. Protected tRPC procedures derive the user ID from the verified session rather than trusting client input.
+
+Chat uses React Query invalidation after send and a four-second refetch interval while the Chat screen is open. This provides a lightweight cross-device near-realtime experience without introducing an always-on WebSocket process before hosting and reconnect policies are selected. Image selection uses Expo ImagePicker, accepts JPEG, PNG, and WebP, enforces a 10 MB limit, uploads through the existing presigned storage helper, and persists only an opaque storage key plus metadata.
+
+Firebase remains an optional provider adapter. When a Firebase project is available, add client configuration through secure project settings, verify Firebase ID tokens server-side, and map the verified Firebase subject to the existing HAMI user/profile tables. Do not put Admin SDK credentials in the mobile bundle.

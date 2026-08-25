@@ -15,3 +15,5 @@ Profile setup validation: submitting registration opens /profile-setup. The scre
 Authenticated validation: after profile setup with the test user Asha, Home shows “Good morning, Asha” and AS initials, while More shows Asha and PRIVATE. No Binod–Indreni demo identity remains in the rendered app surfaces. More exposes Connect, dates, letters, gifts, future modules, Profile & privacy, and Replay welcome.
 
 Preview recovery validation: a temporary unavailable state occurred while revisiting /more, so managed development services were restarted. Metro rebuilt successfully; the public /auth route now renders the HAMI authentication screen again with no build error.
+
+Realtime-upgrade validation: TypeScript, lint, unit tests, and skill validation passed. The managed preview temporarily reported unavailable during direct /chat navigation, so the server should be restarted before final preview capture. The code guard and state-version changes are intended to keep private tabs auth-gated and prevent legacy demo state rehydration.

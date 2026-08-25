@@ -93,6 +93,13 @@ const config: ExpoConfig = {
       },
     ],
     [
+      "expo-image-picker",
+      {
+        photosPermission: "Allow $(PRODUCT_NAME) to choose photos to share privately in HAMI.",
+        cameraPermission: "Allow $(PRODUCT_NAME) to take photos to share privately in HAMI.",
+      },
+    ],
+    [
       "expo-video",
       {
         supportsBackgroundPlayback: true,

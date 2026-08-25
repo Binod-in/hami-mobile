@@ -57,28 +57,13 @@ export const moodOptions: Mood[] = [
   { label: "Stressed", emoji: "~", tone: "#C98A65" },
 ];
 
-const initialUpdates: DailyUpdate[] = [
-  { id: "u1", time: "09:00", title: "Morning coffee", detail: "A quiet start before the day got busy.", mood: moodOptions[4] },
-  { id: "u2", time: "12:30", title: "Lunch break", detail: "Found a tiny ramen place near the office.", mood: moodOptions[0] },
-  { id: "u3", time: "20:00", title: "Thinking of you", detail: "Wish you were here for the evening walk.", mood: moodOptions[1] },
-];
+const initialUpdates: DailyUpdate[] = [];
 
-const initialMessages: Message[] = [
-  { id: "m1", text: "Good morning. I hope today feels gentle.", fromMe: false, time: "08:42", read: true },
-  { id: "m2", text: "Good morning ♥ I’m taking you with me everywhere.", fromMe: true, time: "08:47", read: true },
-  { id: "m3", text: "That’s my favorite kind of promise.", fromMe: false, time: "08:49", read: true },
-];
+const initialMessages: Message[] = [];
 
-const initialMemories: Memory[] = [
-  { id: "mem1", title: "Our first date", date: "March 18, 2024", location: "Kathmandu", description: "The day everything started, with too much coffee and a very long walk.", emoji: "✦", tone: "#E9D5DD" },
-  { id: "mem2", title: "Japan, together", date: "October 04, 2025", location: "Tokyo", description: "Lanterns, late trains, and the best bowl of ramen we have ever shared.", emoji: "◌", tone: "#E4E0F2" },
-  { id: "mem3", title: "A quiet Sunday", date: "January 12, 2026", location: "Home", description: "No plans. Just music, pancakes, and a slow afternoon.", emoji: "☾", tone: "#F3E1D8" },
-];
+const initialMemories: Memory[] = [];
 
-const initialLetters: Letter[] = [
-  { id: "l1", title: "For the next time you miss home", body: "I hope you remember that home is also the person who waits for you.", deliveryLabel: "Open anytime", locked: false },
-  { id: "l2", title: "Our fifth anniversary", body: "A future note, kept safe until the day arrives.", deliveryLabel: "Opens August 08, 2026", locked: true },
-];
+const initialLetters: Letter[] = [];
 
 export const giftOptions: Gift[] = [
   { id: "rose", name: "Rose", emoji: "✿", tone: "#E87891" },
@@ -115,7 +100,7 @@ export function HamiProvider({ children }: { children: ReactNode }) {
   const [connectionRequested, setConnectionRequested] = useState(false);
 
   useEffect(() => {
-    void AsyncStorage.getItem("hami-local-state").then((raw) => {
+    void AsyncStorage.getItem("hami-local-state-v2").then((raw) => {
       if (!raw) return;
       try {
         const saved = JSON.parse(raw) as Partial<Pick<HamiContextValue, "updates" | "messages" | "memories" | "letters" | "lastGift" | "connectionRequested">>;
@@ -133,7 +118,7 @@ export function HamiProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void AsyncStorage.setItem(
-      "hami-local-state",
+      "hami-local-state-v2",
       JSON.stringify({ updates, messages, memories, letters, lastGift, connectionRequested }),
     );
   }, [updates, messages, memories, letters, lastGift, connectionRequested]);

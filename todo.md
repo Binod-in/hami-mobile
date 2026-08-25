@@ -45,3 +45,34 @@
 - [x] Add an extensible feature roadmap surface for future groups, realtime chat, media, notifications, AI, and premium modules
 - [x] Validate authentication-first navigation and ensure no personal demo names appear before user setup
 - [x] Create checkpoint for authentication-first upgrade and deliver the updated project version
+
+# Realtime and Production Backend Upgrade
+
+- [x] Audit the existing server, auth scaffold, Drizzle schema, storage helper, and connector configuration
+- [ ] Add PostgreSQL-backed user profiles with secure ownership checks and cross-device profile synchronization
+- [ ] Add PostgreSQL conversations and message records with private authorization boundaries
+- [x] Add image message metadata and a secure upload/storage boundary
+- [x] Add realtime chat updates with reconnection and query invalidation behavior
+- [x] Add mobile image selection and image-message composer flow
+- [ ] Integrate real email authentication and provider-backed Google/Facebook login where credentials are configured
+- [x] Add clear missing-configuration states for providers that cannot be activated in this environment
+- [x] Create and validate a reusable HAMI implementation skill using the skill-creator workflow
+- [ ] Run end-to-end checks, save a new checkpoint, and deliver the upgraded app and reusable skill
+
+# Firebase Provider Decision
+
+- [ ] Configure Firebase project settings for web, iOS, and Android clients
+- [ ] Add Firebase web configuration and server verification secrets through secure project settings
+- [ ] Enable Firebase email/password, Google, and Facebook providers with redirect/deep-link configuration
+- [ ] Keep PostgreSQL as the source of truth for HAMI profiles, connections, conversations, and messages keyed by verified Firebase identity
+- [ ] Add a reusable Firebase + PostgreSQL implementation skill and validate its package
+
+# Approved Backend Fallback
+
+- [x] Use the existing HAMI secure login and server session boundary instead of blocking on Firebase credentials
+- [x] Keep Firebase integration documented as a future provider adapter rather than activating it now
+- [x] Add managed relational profile, private conversation, message, and attachment tables through the existing Drizzle database boundary
+- [x] Add protected tRPC profile and chat procedures with identity-based authorization
+- [x] Add near-realtime cross-device message refresh through React Query invalidation and polling
+- [x] Add clean account state and private-tab guards so legacy seeded content cannot rehydrate
+- [x] Create and validate the reusable HAMI production-sync skill package

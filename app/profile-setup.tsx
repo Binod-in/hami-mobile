@@ -7,6 +7,7 @@ import { PrimaryButton } from "@/components/hami-primitives";
 import { useAccount } from "@/lib/account-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useColors } from "@/hooks/use-colors";
+import { trpc } from "@/lib/trpc";
 
 const modes = ["Partner", "Family", "Friends", "Private group"] as const;
 
@@ -14,13 +15,14 @@ export default function ProfileSetupScreen() {
   const colors = useColors();
   const router = useRouter();
   const account = useAccount();
-  const auth = useAuth({ autoFetch: false });
+  const auth = useAuth();
   const [displayName, setDisplayName] = useState(account.profile?.displayName ?? auth.user?.name ?? "");
   const [username, setUsername] = useState(account.profile?.username ?? "");
   const [mode, setMode] = useState<(typeof modes)[number]>("Partner");
   const [error, setError] = useState("");
+  const saveProfile = trpc.profile.save.useMutation();
 
-  const finish = () => {
+  const finish = async () => {
     if (!displayName.trim() || !username.trim()) {
       setError("Add your display name and a username to continue.");
       return;
@@ -33,6 +35,9 @@ export default function ProfileSetupScreen() {
       authMethod: account.profile?.authMethod ?? "email",
       passwordSet: account.profile?.passwordSet ?? false,
     });
+    if (auth.isAuthenticated) {
+      try { await saveProfile.mutateAsync({ username: username.trim().replace(/^@/, ""), displayName: displayName.trim(), connectionMode: mode }); } catch { setError("Your profile is saved on this device. Sync will retry when the server session is available."); }
+    }
     router.replace("/(tabs)");
   };
 
