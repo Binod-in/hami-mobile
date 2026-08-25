@@ -44,4 +44,4 @@
 - [x] Add account deletion with confirmation and a reversible restore window in the local product flow
 - [x] Add an extensible feature roadmap surface for future groups, realtime chat, media, notifications, AI, and premium modules
 - [x] Validate authentication-first navigation and ensure no personal demo names appear before user setup
-- [ ] Create checkpoint for authentication-first upgrade and deliver the updated project version
+- [x] Create checkpoint for authentication-first upgrade and deliver the updated project version
